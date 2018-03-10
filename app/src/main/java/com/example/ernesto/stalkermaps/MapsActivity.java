@@ -33,6 +33,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
@@ -85,6 +88,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataManager.insert("Ordino", "AD","42.55623","1.53319");
                 dataManager.insert("Canillo", "AD","42.5676","1.59756");
 
+                dataManager.insert("US101", "US", "37.4158675", "-122.0844253");
+
                 // Uncomment to test:
 
                 // This is how delete works
@@ -96,7 +101,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // This is how find works
                 if(dataManager.find("Ordino") != null) {
-                    Log.i("Object", dataManager.find("Ordino").toString());
+                    //Log.i("Object", dataManager.find("Ordino").toString());
+                    try {
+                        JSONObject ordino = dataManager.find("Ordino");
+                        LatLng latLng = new LatLng(Double.parseDouble(ordino.getString("lat")),
+                                            Double.parseDouble(ordino.getString("lng")));
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng).title(ordino.getString("name")).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                        mMap.addMarker(markerOptions);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                if(dataManager.find("US101") != null) {
+                    //Log.i("Object", dataManager.find("Ordino").toString());
+                    try {
+                        JSONObject ordino = dataManager.find("US101");
+                        LatLng latLng = new LatLng(Double.parseDouble(ordino.getString("lat")),
+                                Double.parseDouble(ordino.getString("lng")));
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng).title(ordino.getString("name")).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                        mMap.addMarker(markerOptions);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
                 if(dataManager.find("Encamp") != null) {
@@ -107,6 +140,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataManager.update("Canillo", "MX", "0", "-150");
                 dataManager.update("Ordino", "US", "100", "100");
                 dataManager.printContents();
+
+
 
 
                 break;
